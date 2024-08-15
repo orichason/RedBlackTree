@@ -25,8 +25,8 @@ namespace RedBlackTree
             public Node(T value, bool isRed)
             {
                 this.Value = value;
-                LeftChild = new();
-                RightChild = new();
+                //LeftChild = new();
+                //RightChild = new();
                 this.IsRed = isRed;
             }
 
@@ -51,20 +51,17 @@ namespace RedBlackTree
 
             else
             {
-                Insert(Root, value);
+                Root = Insert(Root, value);
             }
+
+            Root.IsRed = false;
+            Count++;
         }
 
         private Node Insert(Node current, T value)
         {
-            if (current == null) return new Node(value, false);
+            if (current == null) return new Node(value, true);
 
-            if (current.LeftChild.IsRed && current.RightChild.IsRed)
-            {
-                //change colors
-
-                FlipColors(current);
-            }
 
             if (value.CompareTo(current.Value) < 0)
             {
@@ -76,19 +73,53 @@ namespace RedBlackTree
                 current.RightChild = Insert(current.RightChild, value);
             }
 
-            if(current.RightChild.IsRed)
+            if (isRed(current.LeftChild) && isRed(current.RightChild))
+            {
+                //change colors
+
+                FlipColors(current);
+            }
+            if(isRed(current.RightChild))
             {
                 //rotate left
+                current = RotateLeft(current);
             }
 
+            if(isRed(current.LeftChild) && isRed(current.LeftChild.LeftChild))
+            {
+                //rotate right
+                current = RotateRight(current);
+            }
 
+            return current;
         }
 
-        private Node Rotate(Node current)
+        private bool isRed(Node node)
         {
-            Node temp = current;
-            temp.LeftChild = current;
-            current = temp;
+            if (node == null)
+                return false;
+            return node.IsRed;
+        }
+        private Node RotateLeft(Node parent)
+        {
+            Node newParent = parent.RightChild;
+            newParent.LeftChild = parent;
+            parent.RightChild = newParent.LeftChild;
+            newParent.IsRed = parent.IsRed;
+            parent.IsRed = true;
+
+            return newParent;
+        }
+
+        private Node RotateRight(Node parent)
+        {
+            Node newParent = parent.LeftChild;
+            newParent.RightChild = parent;
+            parent.LeftChild = parent.LeftChild;
+            newParent.IsRed = parent.IsRed;
+            parent.IsRed = true;
+
+            return newParent;
         }
 
         private void FlipColors(Node node)
