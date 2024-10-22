@@ -6,6 +6,7 @@ class Program
     {
         RedBlackTree<int> tree = new();
 
+
         tree.Insert(6);
         tree.Insert(2);
         tree.Insert(5);

@@ -62,6 +62,12 @@ namespace RedBlackTree
         {
             if (current == null) return new Node(value, true);
 
+            if (isRed(current.LeftChild) && isRed(current.RightChild))
+            {
+                //change colors
+
+                FlipColors(current);
+            }
 
             if (value.CompareTo(current.Value) < 0)
             {
@@ -73,13 +79,8 @@ namespace RedBlackTree
                 current.RightChild = Insert(current.RightChild, value);
             }
 
-            if (isRed(current.LeftChild) && isRed(current.RightChild))
-            {
-                //change colors
 
-                FlipColors(current);
-            }
-            if(isRed(current.RightChild))
+            if (isRed(current.RightChild) && !isRed(current.LeftChild))
             {
                 //rotate left
                 current = RotateLeft(current);
@@ -90,6 +91,13 @@ namespace RedBlackTree
                 //rotate right
                 current = RotateRight(current);
             }
+
+            if (isRed(current.LeftChild) && isRed(current.RightChild))
+            {
+                //change colors
+                FlipColors(current);
+            }
+
 
             return current;
         }
@@ -102,9 +110,12 @@ namespace RedBlackTree
         }
         private Node RotateLeft(Node parent)
         {
-            Node newParent = parent.RightChild;
+            var newParent = parent.RightChild;
+            var T2 = newParent.LeftChild;
+
             newParent.LeftChild = parent;
-            parent.RightChild = newParent.LeftChild;
+            parent.RightChild = T2;
+
             newParent.IsRed = parent.IsRed;
             parent.IsRed = true;
 
@@ -113,9 +124,12 @@ namespace RedBlackTree
 
         private Node RotateRight(Node parent)
         {
-            Node newParent = parent.LeftChild;
+            var newParent = parent.LeftChild;
+            var T2 = newParent.RightChild;
+
             newParent.RightChild = parent;
-            parent.LeftChild = parent.LeftChild;
+            parent.LeftChild = T2;
+
             newParent.IsRed = parent.IsRed;
             parent.IsRed = true;
 
