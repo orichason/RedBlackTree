@@ -4,7 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        RedBlackTree<int> tree = new();
+        LeftLeaningRedBlackTree<int> tree = new();
 
 
         tree.Insert(6);
